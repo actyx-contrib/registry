@@ -1,4 +1,4 @@
-![](https://raw.githubusercontent.com/Actyx-contrib/registry/master/registry-logo.png =130x)
+![](https://raw.githubusercontent.com/actyx-contrib/registry/master/registry-icon.png?token=AATHWQKNNTOL4FZ7QT2V5SK64QH7Y =130x)
 
 # Registry toolkit
 
