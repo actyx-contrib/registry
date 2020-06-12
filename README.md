@@ -1,4 +1,5 @@
-![](https://raw.githubusercontent.com/actyx-contrib/registry/master/registry-icon.png?token=AATHWQKNNTOL4FZ7QT2V5SK64QH7Y){height=130px}
+![pond registry][logo]{height=130px}
+[logo]: https://raw.githubusercontent.com/actyx-contrib/registry/master/registry-icon.png?token=AATHWQKNNTOL4FZ7QT2V5SK64QH7Y "This is a tree"
 
 # Registry toolkit
 
