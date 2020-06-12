@@ -1,0 +1,29 @@
+{
+  "name": "@actyx-contrib/registry",
+  "version": "0.1.0",
+  "description": "",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "scripts": {
+    "clean": "rimraf ./lib ./coverage",
+    "tsc": "tsc",
+    "tsc:watch": "tsc --watch --pretty",
+    "build": "tsc -p ./tsconfig.json",
+    "build:watch": "npm run build -- --watch --pretty",
+    "build:prod": "npm run build",
+    "lint": "tsc & eslint './src/**/*.{js,ts,tsx}' & prettier './src/**/*.{js,ts,tsx}' --check",
+    "lint:fix": "tsc & eslint './src/**/*.{js,ts,tsx}' --fix & prettier './src/**/*.{js,ts,tsx}' --write",
+    "license:add": "license-check-and-add add -f add-license-config.json",
+    "license:check": "license-check-and-add check -f add-license-config.json",
+    "license:check-dep": "license-checker --production --onlyAllow 'MIT; MIT OR X11; BSD; ISC; Apache-2.0;'"
+  },
+  "author": "Actyx AG",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@actyx/pond": "^1.0.3",
+    "rxjs": "^5.5.12"
+  },
+  "peerDependencies": {
+    "@actyx/pond": "^1.0.3"
+  }
+}
