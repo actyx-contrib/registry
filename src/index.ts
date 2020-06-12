@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 Actyx AG
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { FishName, FishType, OnStateChange, Pond, Semantics, Subscription } from '@actyx/pond'
 import { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs/observable/combineLatest'
@@ -5,7 +20,7 @@ import { combineLatest } from 'rxjs/observable/combineLatest'
 /**
  * type to use the pondLike or the observe function it self
  */
-type PondObserve =
+export type PondLike =
   | {
       observe: Pond['observe']
     }
@@ -13,9 +28,10 @@ type PondObserve =
 
 /**
  * helper to get the observe function from the parameter
+ * @internal
  * @param pond pond or pond.observe
  */
-const obs = (pond: PondObserve): Pond['observe'] =>
+const obs = (pond: PondLike): Pond['observe'] =>
   typeof pond === 'function' ? pond : pond.observe
 
 /**
@@ -24,11 +40,11 @@ const obs = (pond: PondObserve): Pond['observe'] =>
  * @see observeRegistryMap map the registry fish state to a FishName[]
  *
  * @param pond pond instance or pond.observe function
- * @param registryFish Registry fish which state is a FishName[]
+ * @param registryFish registry fish which state is a FishName[]
  * @param entityFish entity fish to observe the state
  */
 export const observeRegistry = <P>(
-  pond: PondObserve,
+  pond: PondLike,
   registryFish: FishType<unknown, unknown, ReadonlyArray<FishName>>,
   entityFish: FishType<unknown, unknown, P>,
 ): Observable<ReadonlyArray<P>> =>
@@ -43,13 +59,15 @@ export const observeRegistry = <P>(
  *
  * The _Map_ version take an map function to map the PublicRegistryFishState to a FishName array
  *
- * @param pond pond instance or pond.observe function
- * @param registryFish Registry fish that contains a array of `FishName`s to observe them
+ * @see observeRegistry if you don't have to map the state
+ *
+ * @param pond pond like instance or pond.observe function
+ * @param registryFish registry fish that contains a array of `FishName`s to observe them
  * @param map map function that have to return a array on `FishName`s
  * @param entityFish entity fish to observe the state
  */
 export const observeRegistryMap = <R, P>(
-  pond: PondObserve,
+  pond: PondLike,
   registryFish: FishType<unknown, unknown, R>,
   map: (state: R) => ReadonlyArray<FishName>,
   entityFish: FishType<unknown, unknown, P>,
@@ -68,7 +86,7 @@ export const observeRegistryMap = <R, P>(
 export type RegistryFishState = ReadonlyArray<FishName>
 
 /**
- * on event handler for a registry fish
+ * OnEventHandler for a registry fish
  *
  * ## return:
  *
@@ -93,15 +111,15 @@ export type RegistryFishState = ReadonlyArray<FishName>
 export type RegistryOnEvent<E> = (payload: E) => 'add' | 'remove' | 'ignore'
 
 /**
- * Create a Registry fish for a given fish definition
+ * Create a Registry fish for a given fish type
  *
  * ## example
  * ```typescript
- * const ExampleRegistryFish1 = createRegistryFish(ExampleFish, EventType.create)
- * const ExampleRegistryFish1 = createRegistryFish(ExampleFish, EventType.create, EventType.deleted)
- * const ExampleRegistryFish3 = createRegistryFish(ExampleFish, [EventType.create])
- * const ExampleRegistryFish4 = createRegistryFish(ExampleFish, [EventType.create], [EventType.deleted])
- * const ExampleRegistryFish5 = createRegistryFish(
+ * const RegistryFish1 = createRegistryFish(ExampleFish, EventType.create)
+ * const RegistryFish2 = createRegistryFish(ExampleFish, EventType.create, EventType.deleted)
+ * const RegistryFish3 = createRegistryFish(ExampleFish, [EventType.create])
+ * const RegistryFish4 = createRegistryFish(ExampleFish, [EventType.create], [EventType.deleted])
+ * const RegistryFish5 = createRegistryFish(
  *   ExampleFish,
  *   event => {
  *     switch (event.type) {
@@ -116,9 +134,9 @@ export type RegistryOnEvent<E> = (payload: E) => 'add' | 'remove' | 'ignore'
  * )
  * ```
  *
- * @param entityFish Fish to create the Registry for
- * @param addEventOrEventHandler EventType or Array of EventTypes to add the source.name to the Registry or an eventHandler for mor complex Registry use-cases
- * @param removeEvent EventType or Array of EventTypes, when the source.name should be removed from the Registry
+ * @param entityFish Fish to create the registry for
+ * @param addEventOrEventHandler EventType or array of EventTypes to add the source.name to the registry or an eventHandler for more complex registry use-cases
+ * @param removeEvent EventType or array of EventTypes, when the source.name should be removed from the registry
  */
 export const createRegistryFish = <E extends { type: string }>(
   entityFish: FishType<unknown, E, unknown>,
@@ -126,7 +144,7 @@ export const createRegistryFish = <E extends { type: string }>(
   removeEvent: E['type'] | ReadonlyArray<E['type']> = [],
 ) => {
   return FishType.of<RegistryFishState, unknown, E, RegistryFishState>({
-    semantics: Semantics.of(entityFish.semantics + 'AutoRegistry'),
+    semantics: Semantics.of(entityFish.semantics + addEventOrEventHandler.toString() + removeEvent.toString()),
     initialState: () => ({
       state: [],
       subscriptions: [Subscription.of(entityFish)],
@@ -170,16 +188,16 @@ export const createRegistryFish = <E extends { type: string }>(
 }
 
 /**
- * create an internal registryFish and return a stream of the state of all _registered_ entryFish as Array
+ * create an internal registry fish and return a stream of the state of all referenced entryFish as array
  *
  * ## Example
  *
  * ```typescript
- * const allExampleFish1 = observeAll(pond, ExampleFish, EventType.create)
- * const allExampleFish2 = observeAll(pond, ExampleFish, EventType.create, EventType.deleted)
- * const allExampleFish3 = observeAll(pond, ExampleFish, [EventType.create])
- * const allExampleFish4 = observeAll(pond, ExampleFish, [EventType.create], [EventType.deleted])
- * const allExampleFish5 = observeAll(
+ * const registryFish1 = observeAll(pond, ExampleFish, EventType.create)
+ * const registryFish2 = observeAll(pond, ExampleFish, EventType.create, EventType.deleted)
+ * const registryFish3 = observeAll(pond, ExampleFish, [EventType.create])
+ * const registryFish4 = observeAll(pond, ExampleFish, [EventType.create], [EventType.deleted])
+ * const registryFish5 = observeAll(
  *   pond,
  *   ExampleFish,
  *   event => {
@@ -196,12 +214,12 @@ export const createRegistryFish = <E extends { type: string }>(
  * ```
  *
  * @param pond pond instance or pond.observe function
- * @param entityFish entity to create RegistryFish and observe the state
- * @param addEventOrEventHandler EventType or Array of EventTypes to add the source.name to the Registry or an eventHandler for mor complex Registry use-cases
- * @param removeEvent EventType or Array of EventTypes, when the source.name should be removed from the Registry
+ * @param entityFish entity to create registry fish and observe the state
+ * @param addEventOrEventHandler EventType or array of EventTypes to add the source.name to the registry or an eventHandler for more complex registry use-cases
+ * @param removeEvent EventType or array of EventTypes, when the source.name should be removed from the registry
  */
 export const observeAll = <P, E extends { type: string }>(
-  pond: PondObserve,
+  pond: PondLike,
   entityFish: FishType<unknown, E, P>,
   addEventOrEventHandler: E['type'] | ReadonlyArray<E['type']> | RegistryOnEvent<E>,
   removeEvent: E['type'] | ReadonlyArray<E['type']> = [],
