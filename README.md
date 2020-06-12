@@ -1,4 +1,4 @@
-<img width="130px" src="https://raw.githubusercontent.com/actyx-contrib/registry/master/registry-icon.png?token=AATHWQKNNTOL4FZ7QT2V5SK64QH7Y">
+<img width="130px" src="https://raw.githubusercontent.com/actyx-contrib/registry/master/registry-icon.png?token=AATHWQKVWIHXWZACE2TBV3264QIVK">
 
 # Registry toolkit
 
