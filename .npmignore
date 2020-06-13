@@ -1,7 +1,14 @@
 *.json
 yarn.lock
 src
+docs
+example
+*.tgz
+registry-icon.png
 coverage
+add-license-config
+add-license-text
+.eslintrc.js
 .prettierrc.json
 .travis.yml
 .vscode
@@ -13,5 +20,6 @@ tsconfig.json
 jest.config.js
 jest.setup.js
 .loki
-.storybook
-src/__tests__
+.travis.yml
+.editorconfig
+.prettierrc.js

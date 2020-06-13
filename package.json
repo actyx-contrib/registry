@@ -1,7 +1,7 @@
 {
   "name": "@actyx-contrib/registry",
-  "version": "0.1.0",
-  "description": "",
+  "version": "1.0.0",
+  "description": "Want to keep track of and work with all fish of a specific type? Meet the RegistryFish pattern.",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
