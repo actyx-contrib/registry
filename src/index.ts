@@ -1,12 +1,12 @@
 /*
  * Copyright 2020 Actyx AG
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,8 +31,16 @@ export type PondLike =
  * @internal
  * @param pond pond or pond.observe
  */
-const obs = (pond: PondLike): Pond['observe'] =>
+export const obs = (pond: PondLike): Pond['observe'] =>
   typeof pond === 'function' ? pond : pond.observe
+
+/**
+ * typed implementation of isArray
+ * @internal
+ * @param value value that could be an array
+ */
+export const isArray = <T>(value: T | ReadonlyArray<T>): value is ReadonlyArray<T> =>
+  Array.isArray(value)
 
 /**
  * observeRegistry can be used to map the state of an registryFish to the entity fish
@@ -50,7 +58,7 @@ export const observeRegistry = <P>(
 ): Observable<ReadonlyArray<P>> =>
   obs(pond)(registryFish, FishName.of('reg')).switchMap(names =>
     names.length === 0
-      ? Observable.never<ReadonlyArray<P>>().startWith([])
+      ? Observable.of<ReadonlyArray<P>>([])
       : combineLatest(names.map(name => obs(pond)(entityFish, name))),
   )
 
@@ -76,14 +84,19 @@ export const observeRegistryMap = <R, P>(
     .map(map)
     .switchMap(names =>
       names.length === 0
-        ? Observable.never<ReadonlyArray<P>>().startWith([])
+        ? Observable.of<ReadonlyArray<P>>([])
         : combineLatest(names.map(name => obs(pond)(entityFish, name))),
     )
 
 /**
+ * internal Registry Fish State
+ */
+export type RegistryFishState = {[name: string]: true}
+
+/**
  * private and public state of the registry fish
  */
-export type RegistryFishState = ReadonlyArray<FishName>
+export type RegistryFishPublicState = ReadonlyArray<FishName>
 
 /**
  * OnEventHandler for a registry fish
@@ -143,10 +156,18 @@ export const createRegistryFish = <E extends { type: string }>(
   addEventOrEventHandler: E['type'] | ReadonlyArray<E['type']> | RegistryOnEvent<E>,
   removeEvent: E['type'] | ReadonlyArray<E['type']> = [],
 ) => {
-  return FishType.of<RegistryFishState, unknown, E, RegistryFishState>({
+  const addEvents =
+    typeof addEventOrEventHandler === 'function'
+      ? [] as ReadonlyArray<E['type']>
+      : isArray(addEventOrEventHandler)
+        ? addEventOrEventHandler
+        : [addEventOrEventHandler]
+  const removeEvents = isArray(removeEvent) ? removeEvent : [removeEvent]
+
+  return FishType.of<RegistryFishState, unknown, E, RegistryFishPublicState>({
     semantics: Semantics.of(entityFish.semantics + addEventOrEventHandler.toString() + removeEvent.toString()),
     initialState: () => ({
-      state: [],
+      state: {},
       subscriptions: [Subscription.of(entityFish)],
     }),
     onEvent: (state, event) => {
@@ -154,35 +175,30 @@ export const createRegistryFish = <E extends { type: string }>(
       if (typeof addEventOrEventHandler === 'function') {
         switch (addEventOrEventHandler(payload)) {
           case 'add':
-            return state.some(name => name === source.name) ? state : [...state, source.name]
+            return {...state, [source.name]: true }
           case 'remove':
-            return state.filter(name => name !== source.name)
+            const {[source.name]: _, ...newState } = state
+            return newState
           case 'ignore':
           default:
             return state
         }
       } else {
-        const addEvents: ReadonlyArray<E['type']> = Array.isArray(addEventOrEventHandler)
-          ? addEventOrEventHandler
-          : [addEventOrEventHandler]
-        const removeEvents: ReadonlyArray<E['type']> = Array.isArray(removeEvent)
-          ? removeEvent
-          : [removeEvent]
-
         if (addEvents.some(eventType => eventType === payload.type)) {
-          return state.some(name => name === source.name) ? state : [...state, source.name]
+            return {...state, [source.name]: true }
         } else if (removeEvents.some(eventType => eventType === payload.type)) {
-          return state.filter(name => name !== source.name)
+          const {[source.name]: _drop, ...newState } = state
+          return newState
         } else {
           return state
         }
       }
     },
-    onStateChange: OnStateChange.publishPrivateState(),
+    onStateChange: OnStateChange.publishState(intSt => Object.keys(intSt).map(FishName.of)),
     localSnapshot: {
       version: 1,
       serialize: state => state,
-      deserialize: state => state as ReadonlyArray<FishName>,
+      deserialize: state => state as RegistryFishState,
     },
   })
 }
