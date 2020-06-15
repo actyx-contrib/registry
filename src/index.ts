@@ -91,7 +91,7 @@ export const observeRegistryMap = <R, P>(
 /**
  * internal Registry Fish State
  */
-export type RegistryFishState = {[name: string]: true}
+export type RegistryFishState = { [name: string]: true }
 
 /**
  * private and public state of the registry fish
@@ -158,14 +158,16 @@ export const createRegistryFish = <E extends { type: string }>(
 ) => {
   const addEvents =
     typeof addEventOrEventHandler === 'function'
-      ? [] as ReadonlyArray<E['type']>
+      ? ([] as ReadonlyArray<E['type']>)
       : isArray(addEventOrEventHandler)
-        ? addEventOrEventHandler
-        : [addEventOrEventHandler]
+      ? addEventOrEventHandler
+      : [addEventOrEventHandler]
   const removeEvents = isArray(removeEvent) ? removeEvent : [removeEvent]
 
   return FishType.of<RegistryFishState, unknown, E, RegistryFishPublicState>({
-    semantics: Semantics.of(entityFish.semantics + addEventOrEventHandler.toString() + removeEvent.toString()),
+    semantics: Semantics.of(
+      entityFish.semantics + addEventOrEventHandler.toString() + removeEvent.toString(),
+    ),
     initialState: () => ({
       state: {},
       subscriptions: [Subscription.of(entityFish)],
@@ -175,9 +177,10 @@ export const createRegistryFish = <E extends { type: string }>(
       if (typeof addEventOrEventHandler === 'function') {
         switch (addEventOrEventHandler(payload)) {
           case 'add':
-            return {...state, [source.name]: true }
+            return { ...state, [source.name]: true }
           case 'remove':
-            const {[source.name]: _, ...newState } = state
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { [source.name]: _drop, ...newState } = state
             return newState
           case 'ignore':
           default:
@@ -185,9 +188,10 @@ export const createRegistryFish = <E extends { type: string }>(
         }
       } else {
         if (addEvents.some(eventType => eventType === payload.type)) {
-            return {...state, [source.name]: true }
+          return { ...state, [source.name]: true }
         } else if (removeEvents.some(eventType => eventType === payload.type)) {
-          const {[source.name]: _drop, ...newState } = state
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { [source.name]: _drop, ...newState } = state
           return newState
         } else {
           return state
