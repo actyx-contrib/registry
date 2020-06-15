@@ -1,25 +1,10 @@
-<!--
-Copyright 2020 Actyx AG
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
 <!doctype html>
 <html class="minimal no-js">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@actyx-contrib/registry - v0.1.0 | @actyx-contrib/registry - v0.1.0</title>
-	<meta name="description" content="Documentation for @actyx-contrib/registry - v0.1.0">
+	<title>@actyx-contrib/registry - v1.0.0 | @actyx-contrib/registry - v1.0.0</title>
+	<meta name="description" content="Documentation for @actyx-contrib/registry - v1.0.0">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
 /* ==========================================================================
@@ -2707,7 +2692,7 @@ img {
 		<div class="container">
 			<div class="table-wrap">
 				<div class="table-cell">
-					<strong><a href="index.html">@actyx-contrib/registry - v0.1.0</a></strong>
+					<strong><a href="index.html">@actyx-contrib/registry - v1.0.0</a></strong>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -2763,7 +2748,7 @@ img {
 <div class="container container-main">
 	<div class="content-wrap">
 		<div class="tsd-panel tsd-typography">
-			<img width="130px" src="https://raw.githubusercontent.com/Actyx-contrib/registry/master/registry-logo.png">
+			<img width="130px" src="https://raw.githubusercontent.com/actyx-contrib/registry/master/registry-icon.png?token=AATHWQKVWIHXWZACE2TBV3264QIVK">
 			<a href="#registry-toolkit" id="registry-toolkit" style="color: inherit; text-decoration: none;">
 				<h1>Registry toolkit</h1>
 			</a>
@@ -2779,20 +2764,23 @@ img {
 			</a>
 			<p>Registry toolkit is available as an <a href="https://www.npmjs.com/package/@actyx-contrib/registry">npm package</a>.</p>
 			<pre><code class="language-shell">npm install @actyx-contrib/registry</code></pre>
-			<a href="#📖-example" id="📖-example" style="color: inherit; text-decoration: none;">
-				<h2>📖 Example</h2>
+			<a href="#📖-example--tutorials" id="📖-example--tutorials" style="color: inherit; text-decoration: none;">
+				<h2>📖 Example / Tutorials</h2>
 			</a>
-			<p>You can access the documentation and related examples by visiting:</p>
-			<p><a href="https://actyx.github.io/industrial-ui/index.html">https://actyx.github.io/industrial-ui/index.html</a></p>
-			<p>by clicking on the &quot;Docs&quot; tab you can access description, code samples, and properties details for each component.</p>
-			<p>For off-line documentation please use following instructions:</p>
-			<p>More info here <a href="https://developer.actyx.com/blog/2020/06/15/registry-fishes">developer.actyx.com/blog</a></p>
-			<a href="#tutorials" id="tutorials" style="color: inherit; text-decoration: none;">
-				<h2>Tutorials</h2>
-			</a>
-			<ul>
-				<li><a href="./tutorials/how-to-set-up-project-and-import-industrial-ui.md">How to set up a new project and import Industrial UI</a></li>
-			</ul>
+			<p>This library is made to reduce the code you write.</p>
+			<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { createRegistryFish, observeRegistry } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../src&#x27;</span>
+<span class="hljs-keyword">import</span> { ChatFish, EventType } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;./fish/chatFish&quot;</span>
+<span class="hljs-keyword">import</span> { Pond } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@actyx/pond&#x27;</span>
+
+Pond.default().then(<span class="hljs-function"><span class="hljs-params">pond</span> =&gt;</span> {
+  <span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> ChatRoomRegistryFish = createRegistryFish(ChatFish, EventType.message)
+
+  observeRegistry(pond, ChatRoomRegistryFish, ChatFish)
+    .subscribe(<span class="hljs-built_in">console</span>.log)
+})</code></pre>
+			<p>You will find detailed examples <a href="https://github.com/actyx-contrib/registry/tree/master/example">here</a></p>
+			<p>You can access the full api documentation and related examples by visiting:</p>
+			<p><a href="https://actyx-contrib.github.io/registry/">https://actyx-contrib.github.io/registry</a></p>
 			<a href="#🤓-developer-tools" id="🤓-developer-tools" style="color: inherit; text-decoration: none;">
 				<h2>🤓 Developer tools</h2>
 			</a>
@@ -2885,7 +2873,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Pond<wbr>Like<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>observe<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Pond</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"observe"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pond</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"observe"</span><span class="tsd-signature-symbol">]</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/actyx-contrib/registry/blob/65fc5aa/src/index.ts#L8">index.ts:8</a></li>
+						<li>Defined in <a href="https://github.com/actyx-contrib/registry/blob/27c6477/src/index.ts#L23">index.ts:23</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2900,7 +2888,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Registry<wbr>Fish<wbr>State<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ReadonlyArray</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">FishName</span><span class="tsd-signature-symbol">&gt;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/actyx-contrib/registry/blob/65fc5aa/src/index.ts#L69">index.ts:69</a></li>
+						<li>Defined in <a href="https://github.com/actyx-contrib/registry/blob/27c6477/src/index.ts#L86">index.ts:86</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2915,12 +2903,12 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Registry<wbr>OnEvent&lt;E&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>payload<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">E</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">"add"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"remove"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"ignore"</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/actyx-contrib/registry/blob/65fc5aa/src/index.ts#L94">index.ts:94</a></li>
+						<li>Defined in <a href="https://github.com/actyx-contrib/registry/blob/27c6477/src/index.ts#L111">index.ts:111</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>on event handler for a registry fish</p>
+						<p>OnEventHandler for a registry fish</p>
 					</div>
 					<a href="#return" id="return" style="color: inherit; text-decoration: none;">
 						<h2>return:</h2>
@@ -2985,21 +2973,21 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/actyx-contrib/registry/blob/65fc5aa/src/index.ts#L124">index.ts:124</a></li>
+								<li>Defined in <a href="https://github.com/actyx-contrib/registry/blob/27c6477/src/index.ts#L141">index.ts:141</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>Create a Registry fish for a given fish definition</p>
+								<p>Create a Registry fish for a given fish type</p>
 							</div>
 							<a href="#example" id="example" style="color: inherit; text-decoration: none;">
 								<h2>example</h2>
 							</a>
-							<pre><code class="language-typescript"><span class="hljs-keyword">const</span> ExampleRegistryFish1 = createRegistryFish(ExampleFish, EventType.create)
-<span class="hljs-keyword">const</span> ExampleRegistryFish1 = createRegistryFish(ExampleFish, EventType.create, EventType.deleted)
-<span class="hljs-keyword">const</span> ExampleRegistryFish3 = createRegistryFish(ExampleFish, [EventType.create])
-<span class="hljs-keyword">const</span> ExampleRegistryFish4 = createRegistryFish(ExampleFish, [EventType.create], [EventType.deleted])
-<span class="hljs-keyword">const</span> ExampleRegistryFish5 = createRegistryFish(
+							<pre><code class="language-typescript"><span class="hljs-keyword">const</span> RegistryFish1 = createRegistryFish(ExampleFish, EventType.create)
+<span class="hljs-keyword">const</span> RegistryFish2 = createRegistryFish(ExampleFish, EventType.create, EventType.deleted)
+<span class="hljs-keyword">const</span> RegistryFish3 = createRegistryFish(ExampleFish, [EventType.create])
+<span class="hljs-keyword">const</span> RegistryFish4 = createRegistryFish(ExampleFish, [EventType.create], [EventType.deleted])
+<span class="hljs-keyword">const</span> RegistryFish5 = createRegistryFish(
   ExampleFish,
   <span class="hljs-function"><span class="hljs-params">event</span> =&gt;</span> {
     <span class="hljs-keyword">switch</span> (event.type) {
@@ -3025,7 +3013,7 @@ img {
 								<h5>entityFish: <span class="tsd-signature-type">FishType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">E</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>Fish to create the Registry for</p>
+										<p>Fish to create the registry for</p>
 									</div>
 								</div>
 							</li>
@@ -3033,7 +3021,7 @@ img {
 								<h5>addEventOrEventHandler: <span class="tsd-signature-type">E</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"type"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ReadonlyArray</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">E</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"type"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><a href="globals.html#registryonevent" class="tsd-signature-type">RegistryOnEvent</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">E</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>EventType or Array of EventTypes to add the source.name to the Registry or an eventHandler for mor complex Registry use-cases</p>
+										<p>EventType or array of EventTypes to add the source.name to the registry or an eventHandler for more complex registry use-cases</p>
 									</div>
 								</div>
 							</li>
@@ -3041,7 +3029,7 @@ img {
 								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> removeEvent: <span class="tsd-signature-type">E</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"type"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ReadonlyArray</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">E</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"type"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = []</span></h5>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>EventType or Array of EventTypes, when the source.name should be removed from the Registry</p>
+										<p>EventType or array of EventTypes, when the source.name should be removed from the registry</p>
 									</div>
 								</div>
 							</li>
@@ -3060,21 +3048,21 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/actyx-contrib/registry/blob/65fc5aa/src/index.ts#L204">index.ts:204</a></li>
+								<li>Defined in <a href="https://github.com/actyx-contrib/registry/blob/27c6477/src/index.ts#L221">index.ts:221</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>create an internal registryFish and return a stream of the state of all <em>registered</em> entryFish as Array</p>
+								<p>create an internal registry fish and return a stream of the state of all referenced entryFish as array</p>
 							</div>
 							<a href="#example" id="example" style="color: inherit; text-decoration: none;">
 								<h2>Example</h2>
 							</a>
-							<pre><code class="language-typescript"><span class="hljs-keyword">const</span> allExampleFish1 = observeAll(pond, ExampleFish, EventType.create)
-<span class="hljs-keyword">const</span> allExampleFish2 = observeAll(pond, ExampleFish, EventType.create, EventType.deleted)
-<span class="hljs-keyword">const</span> allExampleFish3 = observeAll(pond, ExampleFish, [EventType.create])
-<span class="hljs-keyword">const</span> allExampleFish4 = observeAll(pond, ExampleFish, [EventType.create], [EventType.deleted])
-<span class="hljs-keyword">const</span> allExampleFish5 = observeAll(
+							<pre><code class="language-typescript"><span class="hljs-keyword">const</span> registryFish1 = observeAll(pond, ExampleFish, EventType.create)
+<span class="hljs-keyword">const</span> registryFish2 = observeAll(pond, ExampleFish, EventType.create, EventType.deleted)
+<span class="hljs-keyword">const</span> registryFish3 = observeAll(pond, ExampleFish, [EventType.create])
+<span class="hljs-keyword">const</span> registryFish4 = observeAll(pond, ExampleFish, [EventType.create], [EventType.deleted])
+<span class="hljs-keyword">const</span> registryFish5 = observeAll(
   pond,
   ExampleFish,
   <span class="hljs-function"><span class="hljs-params">event</span> =&gt;</span> {
@@ -3112,7 +3100,7 @@ img {
 								<h5>entityFish: <span class="tsd-signature-type">FishType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">E</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">P</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>entity to create RegistryFish and observe the state</p>
+										<p>entity to create registry fish and observe the state</p>
 									</div>
 								</div>
 							</li>
@@ -3120,7 +3108,7 @@ img {
 								<h5>addEventOrEventHandler: <span class="tsd-signature-type">E</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"type"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ReadonlyArray</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">E</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"type"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><a href="globals.html#registryonevent" class="tsd-signature-type">RegistryOnEvent</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">E</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>EventType or Array of EventTypes to add the source.name to the Registry or an eventHandler for mor complex Registry use-cases</p>
+										<p>EventType or array of EventTypes to add the source.name to the registry or an eventHandler for more complex registry use-cases</p>
 									</div>
 								</div>
 							</li>
@@ -3128,7 +3116,7 @@ img {
 								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> removeEvent: <span class="tsd-signature-type">E</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"type"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ReadonlyArray</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">E</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"type"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = []</span></h5>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>EventType or Array of EventTypes, when the source.name should be removed from the Registry</p>
+										<p>EventType or array of EventTypes, when the source.name should be removed from the registry</p>
 									</div>
 								</div>
 							</li>
@@ -3147,7 +3135,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/actyx-contrib/registry/blob/65fc5aa/src/index.ts#L31">index.ts:31</a></li>
+								<li>Defined in <a href="https://github.com/actyx-contrib/registry/blob/27c6477/src/index.ts#L46">index.ts:46</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3180,7 +3168,7 @@ img {
 								<h5>registryFish: <span class="tsd-signature-type">FishType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ReadonlyArray</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">FishName</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>Registry fish which state is a FishName[]</p>
+										<p>registry fish which state is a FishName[]</p>
 									</div>
 								</div>
 							</li>
@@ -3207,7 +3195,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/actyx-contrib/registry/blob/65fc5aa/src/index.ts#L52">index.ts:52</a></li>
+								<li>Defined in <a href="https://github.com/actyx-contrib/registry/blob/27c6477/src/index.ts#L69">index.ts:69</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3215,6 +3203,11 @@ img {
 								<p>observeRegistryMap can be used to map the state of an registryFish to the entity fish</p>
 							</div>
 							<p>The <em>Map</em> version take an map function to map the PublicRegistryFishState to a FishName array</p>
+							<dl class="tsd-comment-tags">
+								<dt>see</dt>
+								<dd><p>observeRegistry if you don&#39;t have to map the state</p>
+								</dd>
+							</dl>
 						</div>
 						<h4 class="tsd-type-parameters-title">Type parameters</h4>
 						<ul class="tsd-type-parameters">
@@ -3231,7 +3224,7 @@ img {
 								<h5>pond: <a href="globals.html#pondlike" class="tsd-signature-type">PondLike</a></h5>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>pond instance or pond.observe function</p>
+										<p>pond like instance or pond.observe function</p>
 									</div>
 								</div>
 							</li>
@@ -3239,7 +3232,7 @@ img {
 								<h5>registryFish: <span class="tsd-signature-type">FishType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>Registry fish that contains a array of <code>FishName</code>s to observe them</p>
+										<p>registry fish that contains a array of <code>FishName</code>s to observe them</p>
 									</div>
 								</div>
 							</li>

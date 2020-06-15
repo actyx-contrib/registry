@@ -41,8 +41,7 @@ You will find detailed examples [here](https://github.com/actyx-contrib/registry
 
 You can access the full api documentation and related examples by visiting:
 
-[https://actyx.github.io/actyx-contrib/registry/index.html](https://actyx.github.io/actyx-contrib/registry)
-
+[https://actyx-contrib.github.io/registry](https://actyx-contrib.github.io/registry/)
 
 ## 🤓 Developer tools
 

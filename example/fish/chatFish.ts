@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-observeRegistryMap
 /*
  * generated fish pattern with visual studio code extension Actyx-Pond
  * VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=Actyx.actyx-pond
