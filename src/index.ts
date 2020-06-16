@@ -175,27 +175,20 @@ export const createRegistryFish = <E extends { type: string }>(
     onEvent: (state, event) => {
       const { payload, source } = event
       if (typeof addEventOrEventHandler === 'function') {
-        switch (addEventOrEventHandler(payload)) {
-          case 'add':
-            return { ...state, [source.name]: true }
-          case 'remove':
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { [source.name]: _drop, ...newState } = state
-            return newState
-          case 'ignore':
-          default:
-            return state
+        const action = addEventOrEventHandler(payload)
+        if (action === 'add') {
+          state[source.name] = true
+        } else if (action === 'remove') {
+          delete state[source.name]
         }
+        return state
       } else {
         if (addEvents.some(eventType => eventType === payload.type)) {
-          return { ...state, [source.name]: true }
+          state[source.name] = true
         } else if (removeEvents.some(eventType => eventType === payload.type)) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { [source.name]: _drop, ...newState } = state
-          return newState
-        } else {
-          return state
+          delete state[source.name]
         }
+        return state
       }
     },
     onStateChange: OnStateChange.publishState(intSt => Object.keys(intSt).map(FishName.of)),
