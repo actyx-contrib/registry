@@ -1,6 +1,6 @@
 {
   "name": "@actyx-contrib/registry",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Want to keep track of and work with all fish of a specific type? Meet the RegistryFish pattern.",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -24,14 +24,11 @@
   "author": "Actyx AG",
   "license": "Apache-2.0",
   "peerDependencies": {
-    "@actyx/pond": "~1.1",
-    "fp-ts": "~1.19.4",
-    "io-ts": "~1.10.1",
-    "io-ts-types": "~0.4.1",
-    "rxjs": "~5.5.12"
+    "@actyx/pond": "~2",
+    "rxjs": "> 3"
   },
   "devDependencies": {
-    "@actyx/pond": "~1.1",
+    "@actyx/pond": "~2.2",
     "@types/jest": "^26.0.0",
     "@types/node": "^14.0.13",
     "@typescript-eslint/eslint-plugin": "^3.3.0",

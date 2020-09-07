@@ -29,6 +29,7 @@ module.exports = {
         caughtErrorsIgnorePattern: '^_',
       },
     ],
+    "@typescript-eslint/no-explicit-any": 0,
   },
   settings: {
     react: {
