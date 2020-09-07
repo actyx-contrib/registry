@@ -21,31 +21,19 @@ import { FishName, fromEventTypes, RegisterableFish } from './index'
 
 // const nextStateAsPromise = <S>(pond: Pond, fish: Fish<S, any>) => new Promise((resolve, _reject) => pond.observe(fish, resolve))
 
-describe('registry from event types', () => {
-  it('should aggregate known fish', async () => {
-    const pond = await Pond.test()
-
-    const fishName = 'foo'
-    pond.emit<Event>(TestTag.withId(fishName), { type: 'set', fishName })
-
-    const s = take(1)(fromEventTypes.observe(pond, TestFish, 'set')).toPromise()
-    expect(s).resolves.toEqual([fishName])
-  })
-})
-
-export type State = { type: 'undefined' } | { type: 'set' } | { type: 'deleted' }
+export type State = { type: 'undefined' | 'set' | 'deleted'; fishName: FishName }
 export type Event = { type: 'set' | 'delete'; fishName: FishName }
 
 const TestTag = Tag<Event>('test')
 const mkTestFish = (name: FishName): Fish<State, Event> => ({
-  initialState: { type: 'undefined' },
+  initialState: { type: 'undefined', fishName: name },
 
   onEvent: (state, event) => {
     switch (event.type) {
       case 'set':
-        return { type: 'set' }
+        return { type: 'set', fishName: name }
       case 'delete':
-        return { type: 'deleted' }
+        return { type: 'deleted', fishName: name }
       default:
         return state
     }
@@ -65,3 +53,22 @@ const TestFish: RegisterableFish<FishName, State, Event> = {
 
   events: TestTag,
 }
+
+const emitEvent = (pond: Pond, e: Event) =>
+  pond.emit<Event>(TestTag.withId(TestFish.extractFishName(e)), e)
+
+describe('registry from event types', () => {
+  it('should aggregate known fish', async () => {
+    const pond = await Pond.test()
+
+    const fishName = 'foo'
+    emitEvent(pond, { type: 'set', fishName })
+
+    const s = fromEventTypes
+      .observeAll(pond, TestFish, 'set')
+      .pipe(take(1))
+      .toPromise()
+
+    return expect(s).resolves.toEqual([{ fishName, type: 'set' }])
+  })
+})

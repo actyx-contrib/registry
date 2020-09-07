@@ -3,13 +3,13 @@ import * as Generic from './generic-registry'
 import { observeRegistry } from './observe'
 
 export const fromEventTypes = {
-    create: FromEventTypes.createRegistryFish,
-    observe: FromEventTypes.observeAll,
+  create: FromEventTypes.createRegistryFish,
+  observeAll: FromEventTypes.observeAll,
 }
 
 export const generic = {
-    create: Generic.createRegistryFish,
-    observe: Generic.observeAllGeneric,
+  create: Generic.createRegistryFish,
+  observeAll: Generic.observeAllGeneric,
 }
 
 export const observe = observeRegistry

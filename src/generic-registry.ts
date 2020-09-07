@@ -1,36 +1,36 @@
 import { Fish, FishId, Where } from '@actyx/pond'
 import { Observable } from 'rxjs'
 import {
-    ExtractFishName,
-    PondLike,
-    RegisterableFish,
-    RegistryFishState,
-    RegistryOnEvent,
+  ExtractFishName,
+  PondLike,
+  RegisterableFish,
+  RegistryFishState,
+  RegistryOnEvent,
 } from './types'
 import { observeRegistry } from './observe'
 
 const mkOnEvent = <E>(extractFishName: ExtractFishName<E, string>, handler: RegistryOnEvent<E>) => (
-    state: RegistryFishState,
-    payload: E,
+  state: RegistryFishState,
+  payload: E,
 ) => {
-    const action = handler(payload)
-    if (action === 'ignore') {
-        return state
-    }
-
-    const fishName = extractFishName(payload)
-
-    // Empty string should be okay
-    if (fishName === undefined) {
-        return state
-    }
-
-    if (action === 'add') {
-        state[fishName] = true
-    } else if (action === 'remove') {
-        delete state[fishName]
-    }
+  const action = handler(payload)
+  if (action === 'ignore') {
     return state
+  }
+
+  const fishName = extractFishName(payload)
+
+  // Empty string should be okay
+  if (fishName === undefined) {
+    return state
+  }
+
+  if (action === 'add') {
+    state[fishName] = true
+  } else if (action === 'remove') {
+    delete state[fishName]
+  }
+  return state
 }
 
 /**
@@ -62,24 +62,24 @@ const mkOnEvent = <E>(extractFishName: ExtractFishName<E, string>, handler: Regi
  * @param handler            A function that decides whether a given event leads to addition or removal of its related entity.
  */
 export const createRegistryFish = <E>(
-    uniqueDescriptor: string,
-    events: Where<E>,
-    extractFishName: ExtractFishName<E, string>,
-    handler: RegistryOnEvent<E> = () => 'add',
+  uniqueDescriptor: string,
+  events: Where<E>,
+  extractFishName: ExtractFishName<E, string>,
+  handler: RegistryOnEvent<E> = () => 'add',
 ): Fish<RegistryFishState, E> => {
-    const onEvent = mkOnEvent(extractFishName, handler)
+  const onEvent = mkOnEvent(extractFishName, handler)
 
-    const fish: Fish<RegistryFishState, E> = {
-        where: events,
+  const fish: Fish<RegistryFishState, E> = {
+    where: events,
 
-        initialState: {},
+    initialState: {},
 
-        fishId: FishId.of('fish-registry', uniqueDescriptor + '_' + events.toString(), 0),
+    fishId: FishId.of('fish-registry', uniqueDescriptor + '_' + events.toString(), 0),
 
-        onEvent,
-    }
+    onEvent,
+  }
 
-    return fish
+  return fish
 }
 
 /**
@@ -97,15 +97,15 @@ export const createRegistryFish = <E>(
  *                           By default it adds Fish on every event, and never removes Fish.
  */
 export const observeAllGeneric = <S, E>(
-    pond: PondLike,
-    entityFish: RegisterableFish<string, S, E>,
-    handler: RegistryOnEvent<E> = () => 'add',
+  pond: PondLike,
+  entityFish: RegisterableFish<string, S, E>,
+  handler: RegistryOnEvent<E> = () => 'add',
 ): Observable<ReadonlyArray<S>> => {
-    const registryFish = createRegistryFish(
-        entityFish.descriptor,
-        entityFish.events,
-        entityFish.extractFishName,
-        handler,
-    )
-    return observeRegistry(pond, registryFish, entityFish.makeFish)
+  const registryFish = createRegistryFish(
+    entityFish.descriptor,
+    entityFish.events,
+    entityFish.extractFishName,
+    handler,
+  )
+  return observeRegistry(pond, registryFish, entityFish.makeFish)
 }

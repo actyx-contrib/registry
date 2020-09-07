@@ -5,10 +5,10 @@ import { Observable } from 'rxjs'
  * A Pond, or the `observe` function of a Pond.
  */
 export type PondLike =
-    | {
-        observe: Pond['observe']
+  | {
+      observe: Pond['observe']
     }
-    | Pond['observe']
+  | Pond['observe']
 
 type FishToObservable = <S, E>(fish: Fish<S, E>) => Observable<S>
 
@@ -17,16 +17,17 @@ type FishToObservable = <S, E>(fish: Fish<S, E>) => Observable<S>
  * @internal
  * @param pond pond or pond.observe
  */
-export const extractObsFn = (pond: PondLike): Pond['observe'] => typeof pond === 'function' ? pond : pond.observe
+export const extractObsFn = (pond: PondLike): Pond['observe'] =>
+  typeof pond === 'function' ? pond : pond.observe
 
-/** 
+/**
  * Observe a Fish as RXjs Obs
  * @internal
  **/
 export const obs = (pond: PondLike): FishToObservable => {
-    const o = extractObsFn(pond)
-    return <S, E>(fish: Fish<S, E>) =>
-        new Observable<S>(subscriber => o(fish, s => subscriber.next(s)))
+  const o = extractObsFn(pond)
+  return <S, E>(fish: Fish<S, E>) =>
+    new Observable<S>(subscriber => o(fish, s => subscriber.next(s)))
 }
 
 /** How to find a Fish’s "name" (to be remembered by the registry) from an event of type E. */
@@ -38,7 +39,7 @@ export type ExtractFishName<E, Id> = (event: E) => Id
  * Use `Object.keys` to convert into an array.
  */
 export type RegistryFishState = {
-    [fishName: string]: boolean
+  [fishName: string]: boolean
 }
 
 /**
@@ -47,7 +48,7 @@ export type RegistryFishState = {
  * @param value value that could be an array
  */
 export const isArray = <T>(value: T | ReadonlyArray<T>): value is ReadonlyArray<T> =>
-    Array.isArray(value)
+  Array.isArray(value)
 
 /**
  * OnEventHandler for a registry fish
@@ -79,15 +80,15 @@ export type FishName = string
 export type MakeFish<Id, S> = (fishName: Id) => Fish<S, any>
 
 export type RegisterableFish<Id, S, E> = {
-    /** Some unique descriptor for this group of Fish. It’s needed so different registries aren’t confused with one another. */
-    descriptor: string
+  /** Some unique descriptor for this group of Fish. It’s needed so different registries aren’t confused with one another. */
+  descriptor: string
 
-    /** Create a Fish instance from a FishName. */
-    makeFish: MakeFish<Id, S>
+  /** Create a Fish instance from a FishName. */
+  makeFish: MakeFish<Id, S>
 
-    /** From an event, extract the name of the Fish it belongs to. */
-    extractFishName: ExtractFishName<E, Id>
+  /** From an event, extract the name of the Fish it belongs to. */
+  extractFishName: ExtractFishName<E, Id>
 
-    /** Events to base the registration on */
-    events: Where<E>
+  /** Events to base the registration on */
+  events: Where<E>
 }

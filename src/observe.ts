@@ -1,6 +1,6 @@
 import { Fish } from '@actyx/pond'
-import { Observable, of } from 'rxjs'
-import { combineLatest, map, switchMap } from 'rxjs/operators'
+import { combineLatest, Observable, of } from 'rxjs'
+import { map, switchMap } from 'rxjs/operators'
 import { FishName, MakeFish, obs, PondLike, RegistryFishState } from './types'
 
 const fishNamesToStates = <S>(pond: PondLike, makeFish: MakeFish<FishName, S>) => (
@@ -10,11 +10,9 @@ const fishNamesToStates = <S>(pond: PondLike, makeFish: MakeFish<FishName, S>) =
     return of<S[]>([])
   }
 
-  return combineLatest<S[], unknown>(
-    Object.keys(fishNames)
-      .map(makeFish)
-      .map(obs(pond)),
-  )
+  const s: Observable<S>[] = fishNames.map(makeFish).map(obs(pond))
+
+  return combineLatest(s)
 }
 
 /**
