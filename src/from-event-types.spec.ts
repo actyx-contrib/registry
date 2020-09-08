@@ -24,6 +24,8 @@ import { FishName, fromEventTypes, RegisterableFish } from './index'
 export type State = { type: 'undefined' | 'set' | 'deleted'; fishName: FishName }
 export type Event = { type: 'set' | 'delete'; fishName: FishName }
 
+type EType = Event['type']
+
 const TestTag = Tag<Event>('test')
 const mkTestFish = (name: FishName): Fish<State, Event> => ({
   initialState: { type: 'undefined', fishName: name },
@@ -58,17 +60,53 @@ const emitEvent = (pond: Pond, e: Event) =>
   pond.emit<Event>(TestTag.withId(TestFish.extractFishName(e)), e)
 
 describe('registry from event types', () => {
-  it('should aggregate known fish', async () => {
+  const TestCtrl = (pond: Pond) => {
+    const setFish = (fishName: FishName) => emitEvent(pond, { type: 'set', fishName })
+    const deleteFish = (fishName: FishName) => emitEvent(pond, { type: 'delete', fishName })
+
+    const obsAll = (
+      addWhen: EType | ReadonlyArray<EType>,
+      removeWhen: EType | ReadonlyArray<EType> = [],
+    ) =>
+      fromEventTypes
+        .observeAll(pond, TestFish, addWhen, removeWhen)
+        .pipe(take(1))
+        .toPromise()
+
+    return { setFish, deleteFish, obsAll }
+  }
+
+  it('should aggregate known fish for 1 event type', async () => {
     const pond = await Pond.test()
 
-    const fishName = 'foo'
-    emitEvent(pond, { type: 'set', fishName })
+    const T = TestCtrl(pond)
+    T.setFish('foo')
+    T.deleteFish('bar') // Ignored because we only look at 'set'
 
-    const s = fromEventTypes
-      .observeAll(pond, TestFish, 'set')
-      .pipe(take(1))
-      .toPromise()
+    return expect(T.obsAll('set')).resolves.toEqual([{ fishName: 'foo', type: 'set' }])
+  })
 
-    return expect(s).resolves.toEqual([{ fishName, type: 'set' }])
+  it('should aggregate known fish for multiple event types', async () => {
+    const pond = await Pond.test()
+
+    const T = TestCtrl(pond)
+    T.setFish('foo')
+    T.deleteFish('bar')
+
+    return expect(T.obsAll(['set', 'delete'])).resolves.toEqual([
+      { fishName: 'foo', type: 'set' },
+      { fishName: 'bar', type: 'deleted' },
+    ])
+  })
+
+  it('should forget about fish', async () => {
+    const pond = await Pond.test()
+
+    const T = TestCtrl(pond)
+    T.setFish('foo')
+    T.setFish('bar')
+    T.deleteFish('foo')
+
+    return expect(T.obsAll('set', 'delete')).resolves.toEqual([{ fishName: 'bar', type: 'set' }])
   })
 })
