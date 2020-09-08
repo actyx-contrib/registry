@@ -23,18 +23,35 @@ npm install @actyx-contrib/registry
 ## 📖 Example / Tutorials
 
 This library is made to reduce the code you write.
+Works well with the [FishType package](https://github.com/actyx-contrib/fish-type)
 
 ```typescript
-import { createRegistryFish, observeRegistry } from '../src'
-import { ChatFish, EventType } from "./fish/chatFish"
-import { Pond } from '@actyx/pond'
+import { FishType } from '@actyx-contrib/fish-type-v2'
+import { fromTypes } from '@actyx-contrib/registry-v2'
 
-Pond.default().then(pond => {
-  export const ChatRoomRegistryFish = createRegistryFish(ChatFish, EventType.message)
-  
-  observeRegistry(pond, ChatRoomRegistryFish, ChatFish)
-    .subscribe(console.log)
+enum EventType {
+    create = 'create',
+    delete = 'delete',
+}
+
+type Event = { type: EventType, entityId: string }
+type State = { entityId: string, state: 'unknown' | 'created' }
+
+const MyFishType = FishType<State, Event>({
+    typeName: Tag<Event>('example-tag'),
+
+    getTargetFish: (e: Event) => e.entityId,
+
+    makeInstance: (name: FishName) => ({
+        initialState: { entityId: name, type: 'unknown' },
+
+        onEvent: (state, event) => event.type === 'created'
+            ? ({ entityId: name, type: 'created' })
+            : ({ entityId: name, type: 'unknown' }),
+    })
 })
+
+const allActiveFish$ = fromTypes.observeAll(MyFishType, EventType.create, EventType.delete)
 ```
 
 You will find detailed examples [here](https://github.com/actyx-contrib/registry/tree/master/example)
