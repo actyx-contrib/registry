@@ -10,7 +10,7 @@ One thing that has come up quite a few times is the need to track all fish of a 
 
 The registry pattern will lead you to a data model that is **scalable**, **reuseable**, **composable**, and **maintainable**.
 
-Read the blog post about registry fish at [developer.actyx.com/blog](https://developer.actyx.com/blog/2020/06/15/registry-fishes)
+Read more about it in the [blog post](https://developer.actyx.com/blog/2020/06/16/registry-fishes).
 
 ## 📦 Installation
 
