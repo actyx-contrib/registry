@@ -11,6 +11,7 @@ One thing that has come up quite a few times is the need to track all fish of a 
 The registry pattern will lead you to a data model that is **scalable**, **reuseable**, **composable**, and **maintainable**.
 
 Read more about it in the [blog post](https://developer.actyx.com/blog/2020/06/16/registry-fishes).
+(still in Pond-V1, update is coming soon)
 
 ## 📦 Installation
 
@@ -20,20 +21,32 @@ Registry toolkit is available as an [npm package](https://www.npmjs.com/package/
 npm install @actyx-contrib/registry
 ```
 
-## 📖 Example / Tutorials
+## 📖 Example / Micro tutorials
 
 This library is made to reduce the code you write.
 
+Using Callbacks:
+
 ```typescript
-import { createRegistryFish, observeRegistry } from '../src'
-import { ChatFish, EventType } from "./fish/chatFish"
+import { observeRegistry } from '@actyx-contrib/registry'
+import { ChatRoomRegistryFish, ChatFish } from "./fish/chatFish"
 import { Pond } from '@actyx/pond'
 
 Pond.default().then(pond => {
-  export const ChatRoomRegistryFish = createRegistryFish(ChatFish, EventType.message)
-  
-  observeRegistry(pond, ChatRoomRegistryFish, ChatFish)
-    .subscribe(console.log)
+  observeRegistry(pond, MachineFish.registry, Object.keys, MachineFish.of, states => console.log(states))
+})
+```
+
+using RxJS:
+
+```typescript
+import { observeRegistry$ } from '@actyx-contrib/registry'
+import { ChatRoomRegistryFish, ChatFish } from "./fish/chatFish"
+import { RxPond } from '@actyx-contrib/rx-pond'
+
+RxPond.default().then(rxPond => {
+  observeRegistry$(pond, MachineFish.registry, Object.keys, MachineFish.of)
+    .subscribe(states => console.log(states))
 })
 ```
 

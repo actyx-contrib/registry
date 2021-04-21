@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RxPond } from '@actyx-contrib/rx-pond'
 import { CancelSubscription, Fish, Pond } from '@actyx/pond'
 import { combineLatest, Observable, of } from 'rxjs'
@@ -20,7 +21,7 @@ import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 import deepEqual from 'deep-equal'
 
 /**
- * Use your complex registry fish to get the state of the required entities.
+ * Use your complex registry fish to get the state of the referenced entities.
  *
  * @typeParam RegS       - Type of the observed registry Fish’s state.
  * @typeParam P          - Type of the properties used to initialize Fish.
@@ -47,11 +48,11 @@ export const observeRegistry = <RegS, P, S>(
     registryFish,
     mapToProperty,
     makeEntityFish,
-  ).subscribe({ next: (states) => onStateChanged(states) }).unsubscribe
+  ).subscribe({ next: (states): void => onStateChanged(states) }).unsubscribe
 }
 
 /**
- * Use your registry fish to get the state of the required entities.
+ * Use your registry fish to get the state of the referenced entities.
  *
  * @typeParam RegS       - Type of the observed registry Fish’s state.
  * @typeParam P          - Type of the properties used to initialize Fish.
@@ -78,19 +79,20 @@ export const observeRegistry$ = <RegS, Prop, State>(
     // get the ids to simplify the next steps
     map(mapToProperty),
     // switch over to the entity fish
-    map((props) => props.filter((p): p is Prop => p !== undefined)),
+    map((props): Prop[] => props.filter((p): p is Prop => p !== undefined)),
     // switch over to the entity fish
-    switchMap((ids) =>
-      ids.length === 0
-        ? // return empty array when registry is empty
-          of([])
-        : // merge all new fish together to get them nicely into the observable structure
-          combineLatest(
-            // map the ID of the array to a ProductionOrderFish.of
-            ids.map((id) =>
-              // observe a fish for each entry in the ids array
-              rxPond.observe(makeEntityFish(id)),
+    switchMap(
+      (ids): Observable<State[]> =>
+        ids.length === 0
+          ? // return empty array when registry is empty
+            of([])
+          : // merge all new fish together to get them nicely into the observable structure
+            combineLatest(
+              // map the ID of the array to a ProductionOrderFish.of
+              ids.map(id =>
+                // observe a fish for each entry in the ids array
+                rxPond.observe(makeEntityFish(id)),
+              ),
             ),
-          ),
     ),
   )

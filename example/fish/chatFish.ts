@@ -18,86 +18,101 @@
  * VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=Actyx.actyx-pond
  */
 
-import {
-  Envelope,
-  FishType,
-  InitialState,
-  OnCommand,
-  OnEvent,
-  OnStateChange,
-  Semantics,
-  Subscription,
-} from '@actyx/pond'
+import { Fish, FishId, Pond, Tag } from '@actyx/pond'
 
 /*
  * Fish State
  */
-export type State = ReadonlyArray<string>
-export type PublicState = State
-const initialState: InitialState<State> = (name, _sourceId) => ({
-  state: [],
-  subscriptions: [Subscription.of(ChatFish, name)],
-})
+export type State = {
+  roomName: string
+  users: Array<string>
+  messages: Array<string>
+}
 
 /**
  * Fish Events
  */
-export enum EventType {
-  message = 'message',
+export type JoinedEvent = {
+  eventType: 'chatJoined'
+  chatRoom: string
+  username: string
 }
 export type MessageEvent = {
-  type: EventType.message
-  sender: string
+  eventType: 'chatMessage'
+  chatRoom: string
+  username: string
   message: string
 }
-export type Event = MessageEvent
+export type Event = MessageEvent | JoinedEvent
 
-export const onEvent: OnEvent<State, Event> = (state: State, event: Envelope<Event>) => {
-  const { payload } = event
-  switch (payload.type) {
-    case EventType.message: {
-      const newMessage = `${payload.sender}: ${payload.message}`
-      return [newMessage, ...state]
-    }
-  }
-  return state
+const emitJoinedEvent = (pond: Pond, chatRoom: string, username: string) => {
+  pond.emit(chatTag.withId(chatRoom).and(chatJoinTag.withId(chatRoom)), {
+    eventType: 'chatJoined',
+    chatRoom,
+    username,
+  })
+}
+const emitMessageEvent = (pond: Pond, chatRoom: string, username: string, message: string) => {
+  pond.emit(chatTag.withId(chatRoom), {
+    eventType: 'chatMessage',
+    chatRoom,
+    message,
+    username,
+  })
 }
 
-/**
- * Fish Commands
- */
-export enum CommandType {
-  postMessage = 'postMessage',
-}
-export type PostMessageCommand = {
-  type: CommandType.postMessage
-  sender: string
-  message: string
-}
-export type Command = PostMessageCommand
-
-export const onCommand: OnCommand<State, Command, Event> = (_state: State, command: Command) => {
-  switch (command.type) {
-    case CommandType.postMessage: {
-      return [
-        {
-          type: EventType.message,
-          message: command.message,
-          sender: command.sender,
-        },
-      ]
-    }
-  }
-  return []
-}
+const chatTag = Tag<Event>('chat')
+const chatJoinTag = Tag<JoinedEvent>('chat.join')
 
 /*
  * Fish Definition
  */
-export const ChatFish = FishType.of<State, Command, Event, PublicState>({
-  semantics: Semantics.of('chat'),
-  initialState,
-  onEvent,
-  onCommand,
-  onStateChange: OnStateChange.publishPrivateState(),
-})
+export const ChatFish = {
+  tags: {
+    chatTag,
+  },
+  of: (roomName: string): Fish<State, Event> => ({
+    fishId: FishId.of('com.example.chatRoom', roomName, 0),
+    where: chatTag.withId(roomName),
+    initialState: {
+      roomName,
+      users: [],
+      messages: [],
+    },
+    onEvent: (state, event, { timestampAsDate }) => {
+      const [time] = timestampAsDate().toTimeString().split(' ')
+      switch (event.eventType) {
+        case 'chatJoined':
+          if (!state.users.includes(event.username)) {
+            state.users.push(event.username)
+          }
+          state.messages.push(`${time} - ${event.username}: joined`)
+          return state
+        case 'chatMessage':
+          state.messages.push(`${time} - ${event.username}: ${event.message}`)
+          return state
+      }
+      return state
+    },
+  }),
+  roomRegistry: {
+    fishId: FishId.of('com.example.roomRegistry', 'reg', 0),
+    initialState: {},
+    where: chatJoinTag,
+    onEvent: (state, event) => {
+      state[event.chatRoom] = true
+      return state
+    },
+  } as Fish<Record<string, boolean>, JoinedEvent>,
+  userRegistry: {
+    fishId: FishId.of('com.example.userRegistry', 'reg', 0),
+    initialState: {},
+    where: chatJoinTag,
+    onEvent: (state, event) => {
+      state[event.username] = true
+      return state
+    },
+  } as Fish<Record<string, boolean>, JoinedEvent>,
+  emitJoinedEvent,
+  emitMessageEvent,
+}

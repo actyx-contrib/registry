@@ -25,34 +25,29 @@
  * @param entityFish entity fish to observe the state
  */
 
-import { createRegistryFish, observeRegistry } from '../src'
-import { ChatFish, EventType, CommandType } from "./fish/chatFish"
-import { Pond, FishName } from '@actyx/pond'
+import { observeRegistry } from '../src'
+import { ChatFish } from './fish/chatFish'
+import { Pond } from '@actyx/pond'
 
-export const ChatRoomRegistryFish = createRegistryFish(ChatFish, EventType.message)
+console.log('\nMake sure Actyx is running\n\nEnter your name: ')
+process.stdin.once('data', (data) => {
+  const username = data.toString().trim()
+  const chatRoomName = `ChatRoom ${Math.floor(Math.random() * 10)}`
 
-Pond.default().then(pond => {
-  // trace all massages from all chat rooms
-  observeRegistry(pond, ChatRoomRegistryFish, ChatFish)
-    .subscribe(console.log)
+  console.log(`Welcome ${username} to the random chatroom: ${chatRoomName}`)
 
-  // Use a map function for the registry fish to trace all massages from all chat rooms
-  // observeRegistryMap(
-  //     pond,
-  //     AdvancedChatRoomRegistryFish,
-  //     // map the fish state to an array of FishName
-  //     state => state.activeChatRooms,
-  //     ChatFish
-  //   )
-  //   .subscribe(console.log)
+  Pond.default().then((pond) => {
+    ChatFish.emitJoinedEvent(pond, chatRoomName, username)
 
-  // use stdin to post some messages to chatRoom 0 to 10
-  process.stdin.on('data', data => {
-    const chatRoomName = FishName.of(`chatRoom ${(Math.random() * 10).toFixed()}`)
-    pond.feed(ChatFish, chatRoomName)({
-      type: CommandType.postMessage,
-      sender: 'senderName',
-      message: data.toString().trim(),
-    }).toPromise()
+    // trace all massages from all chat rooms
+    observeRegistry(pond, ChatFish.roomRegistry, Object.keys, ChatFish.of, (allChannels) => {
+      console.log(allChannels)
+      console.log(`Enter your message for channel ${chatRoomName}: `)
+    })
+    // use stdin to post some messages to chatRoom 0 to 10
+    process.stdin.on('data', (data) => {
+      const message = data.toString().trim()
+      ChatFish.emitMessageEvent(pond, chatRoomName, username, message)
+    })
   })
 })

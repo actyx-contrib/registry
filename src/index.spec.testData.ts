@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RxPond } from '@actyx-contrib/rx-pond'
 import { Fish, FishId, Tag } from '@actyx/pond'
 import { Observable, of } from 'rxjs'
@@ -52,7 +53,7 @@ export const testFish = (id: string): Fish<TestState, Event> => ({
   fishId: FishId.of('testFisch', id, 0),
   initialState: { id, add: 0, remove: 0 },
   where: Tag<Event>('all').withId(id),
-  onEvent: (state, e) => {
+  onEvent: (state, e): TestState => {
     switch (e.eventType) {
       case 'add':
         state.add += 1
@@ -65,18 +66,18 @@ export const testFish = (id: string): Fish<TestState, Event> => ({
   },
 })
 
-export const TestPond = (events: Record<string, any>) =>
+export const TestPond = <E>(events: Record<string, E[]>): RxPond =>
   (({
-    observe: <S, E>(fish: Fish<S, E>): Observable<S> => {
+    observe: <S>(fish: Fish<S, E>): Observable<S> => {
       const tags = fish.where
         .toString()
         .split(' ')
-        .map((s) => s.substr(1, s.length - 2))
-        .filter((s) => s !== '&' && s !== '|' && s !== '')
+        .map(s => s.substr(1, s.length - 2))
+        .filter(s => s !== '&' && s !== '|' && s !== '')
 
       const es = Object.entries(events)
-        .filter(([k]) => tags.every((t) => k.split(' ').includes(t)))
-        .reduce<Array<any>>((acc, [_, e]) => [...acc, ...e], [])
+        .filter(([k]) => tags.every(t => k.split(' ').includes(t)))
+        .reduce<Array<E>>((acc, [_, e]) => [...acc, ...e], [])
 
       return of(
         es.reduce((s, e) => {
