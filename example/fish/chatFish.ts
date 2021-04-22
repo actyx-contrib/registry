@@ -45,14 +45,19 @@ export type MessageEvent = {
 }
 export type Event = MessageEvent | JoinedEvent
 
-const emitJoinedEvent = (pond: Pond, chatRoom: string, username: string) => {
+const emitJoinedEvent = (pond: Pond, chatRoom: string, username: string): void => {
   pond.emit(chatTag.withId(chatRoom).and(chatJoinTag.withId(chatRoom)), {
     eventType: 'chatJoined',
     chatRoom,
     username,
   })
 }
-const emitMessageEvent = (pond: Pond, chatRoom: string, username: string, message: string) => {
+const emitMessageEvent = (
+  pond: Pond,
+  chatRoom: string,
+  username: string,
+  message: string,
+): void => {
   pond.emit(chatTag.withId(chatRoom), {
     eventType: 'chatMessage',
     chatRoom,
@@ -79,8 +84,10 @@ export const ChatFish = {
       users: [],
       messages: [],
     },
-    onEvent: (state, event, { timestampAsDate }) => {
-      const [time] = timestampAsDate().toTimeString().split(' ')
+    onEvent: (state, event, { timestampAsDate }): State => {
+      const [time] = timestampAsDate()
+        .toTimeString()
+        .split(' ')
       switch (event.eventType) {
         case 'chatJoined':
           if (!state.users.includes(event.username)) {

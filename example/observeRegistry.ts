@@ -30,22 +30,22 @@ import { ChatFish } from './fish/chatFish'
 import { Pond } from '@actyx/pond'
 
 console.log('\nMake sure Actyx is running\n\nEnter your name: ')
-process.stdin.once('data', (data) => {
+process.stdin.once('data', data => {
   const username = data.toString().trim()
   const chatRoomName = `ChatRoom ${Math.floor(Math.random() * 10)}`
 
   console.log(`Welcome ${username} to the random chatroom: ${chatRoomName}`)
 
-  Pond.default().then((pond) => {
+  Pond.default().then(pond => {
     ChatFish.emitJoinedEvent(pond, chatRoomName, username)
 
     // trace all massages from all chat rooms
-    observeRegistry(pond, ChatFish.roomRegistry, Object.keys, ChatFish.of, (allChannels) => {
+    observeRegistry(pond, ChatFish.roomRegistry, Object.keys, ChatFish.of, allChannels => {
       console.log(allChannels)
       console.log(`Enter your message for channel ${chatRoomName}: `)
     })
     // use stdin to post some messages to chatRoom 0 to 10
-    process.stdin.on('data', (data) => {
+    process.stdin.on('data', data => {
       const message = data.toString().trim()
       ChatFish.emitMessageEvent(pond, chatRoomName, username, message)
     })

@@ -67,18 +67,18 @@ export const observeRegistry = <RegS, P, S>(
  *                       Each published state will be stricter newer than the last one.
  *                       (the last array of states is buffered and immediately supplied to new subscribers.)
  */
-export const observeRegistry$ = <RegS, Prop, State>(
+export const observeRegistry$ = <RegS, RegE, Prop, State, Event>(
   rxPond: RxPond,
-  registryFish: Fish<RegS, any>,
+  registryFish: Fish<RegS, RegE>,
   mapToProperty: (regState: RegS) => ReadonlyArray<Prop | undefined>,
-  makeEntityFish: (p: Prop) => Fish<State, any>,
+  makeEntityFish: (p: Prop) => Fish<State, Event>,
 ): Observable<State[]> =>
   rxPond.observe(registryFish).pipe(
     // just emit when the registry changed
     distinctUntilChanged(deepEqual),
     // get the ids to simplify the next steps
     map(mapToProperty),
-    // switch over to the entity fish
+    // filter out unset properties to protect fish from bad names
     map((props): Prop[] => props.filter((p): p is Prop => p !== undefined)),
     // switch over to the entity fish
     switchMap(
