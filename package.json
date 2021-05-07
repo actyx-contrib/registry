@@ -1,6 +1,6 @@
 {
   "name": "@actyx-contrib/registry",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "Want to keep track of and work with all fish of a specific type? Meet the RegistryFish pattern.",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -26,10 +26,10 @@
   "license": "Apache-2.0",
   "peerDependencies": {
     "@actyx/pond": "2",
-    "rxjs": ">4"
+    "rxjs": ">5"
   },
   "devDependencies": {
-    "@actyx/pond": "2.4",
+    "@actyx/pond": "^2.5.0",
     "@types/deep-equal": "^1.0.1",
     "@types/jest": "^26.0.0",
     "@types/node": "^14.0.13",
@@ -39,17 +39,17 @@
     "eslint": "^7.11.0",
     "eslint-config-prettier": "^6.14.0",
     "eslint-plugin-prettier": "^3.1.4",
-    "jest": "^26.6.3",
+    "jest": "^26.5.0",
     "license-check-and-add": "^3.0.4",
     "prettier": "^1.19.1",
-    "rxjs": "6.6",
+    "rxjs": "^7.0.0",
     "ts-jest": "^26.5.5",
     "ts-node": "^9.1.1",
     "typedoc": "^0.20.35",
     "typescript": "4.0"
   },
   "dependencies": {
-    "@actyx-contrib/rx-pond": "0.2",
+    "@actyx-contrib/rx-pond": "0.3",
     "deep-equal": "^2.0.5"
   }
 }
