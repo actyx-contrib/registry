@@ -88,6 +88,9 @@ export const TestPond = <E>(events: Record<string, E[]>): RxPond =>
             tags: ['all'],
             timestampAsDate: () => new Date(),
             timestampMicros: 0,
+            stream: '',
+            offset: 0,
+            appId: ''
           })
         }, fish.initialState),
       )
