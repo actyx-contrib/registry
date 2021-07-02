@@ -28,11 +28,19 @@ Using Callbacks:
 
 ```typescript
 import { observeRegistry } from '@actyx-contrib/registry'
-import { ChatRoomRegistryFish, ChatFish } from "./fish/chatFish"
+import { ChatRoomRegistryFish, ChatFish } from './fish/chatFish'
 import { Pond } from '@actyx/pond'
 
-Pond.default().then(pond => {
-  observeRegistry(pond, MachineFish.registry, Object.keys, MachineFish.of, states => console.log(states))
+const manifest = {
+  appId: 'com.example.registry-example',
+  displayName: 'Registry Example',
+  version: '0.0.1',
+}
+
+Pond.default(manifest).then(pond => {
+  observeRegistry(pond, MachineFish.registry, Object.keys, MachineFish.of, states =>
+    console.log(states),
+  )
 })
 ```
 
@@ -40,12 +48,19 @@ using RxJS:
 
 ```typescript
 import { observeRegistry$ } from '@actyx-contrib/registry'
-import { ChatRoomRegistryFish, ChatFish } from "./fish/chatFish"
+import { ChatRoomRegistryFish, ChatFish } from './fish/chatFish'
 import { RxPond } from '@actyx-contrib/rx-pond'
 
-RxPond.default().then(rxPond => {
-  observeRegistry$(pond, MachineFish.registry, Object.keys, MachineFish.of)
-    .subscribe(states => console.log(states))
+const manifest = {
+  appId: 'com.example.registry-example',
+  displayName: 'Registry Example',
+  version: '0.0.1',
+}
+
+RxPond.default(manifest).then(rxPond => {
+  observeRegistry$(pond, MachineFish.registry, Object.keys, MachineFish.of).subscribe(states =>
+    console.log(states),
+  )
 })
 ```
 
@@ -57,17 +72,17 @@ You can access the full api documentation and related examples by visiting:
 
 ## 🤓 Developer tools
 
-| Script | Description  |
-|---|---|
-| `npm run clean` | Clean lib and coverage folders |
-| `npm run tsc` | Run TypeScript check |
-| `npm run tsc:watch` | Run TypeScript check watch mode |
-| `npm run build` | Build project |
-| `npm run build:watch` | Build project watch mode |
-| `npm run lint` | Check for lint issues |
-| `npm run lint:fix` | Check and automatically fix lint issues |
-| `npm run test` | Run Jest tests |
-| `npm run test:no-coverage` | Run Jest tests and exclude coverage report |
-| `npm run license:add` | Append license information to every relevant files |
-| `npm run license:check` | Check if license information is present on every relevant files |
+| Script                      | Description                                                       |
+| --------------------------- | ----------------------------------------------------------------- |
+| `npm run clean`             | Clean lib and coverage folders                                    |
+| `npm run tsc`               | Run TypeScript check                                              |
+| `npm run tsc:watch`         | Run TypeScript check watch mode                                   |
+| `npm run build`             | Build project                                                     |
+| `npm run build:watch`       | Build project watch mode                                          |
+| `npm run lint`              | Check for lint issues                                             |
+| `npm run lint:fix`          | Check and automatically fix lint issues                           |
+| `npm run test`              | Run Jest tests                                                    |
+| `npm run test:no-coverage`  | Run Jest tests and exclude coverage report                        |
+| `npm run license:add`       | Append license information to every relevant files                |
+| `npm run license:check`     | Check if license information is present on every relevant files   |
 | `npm run license:check-dep` | Check the licenses for project dependencies and produce a summary |

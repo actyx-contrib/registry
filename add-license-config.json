@@ -8,6 +8,8 @@
     "bin/",
     "lib/",
     "coverage/",
+    "docs/",
+    ".github/",
     "add-license-text",
     "jest.config.js",
     "jest.setup.js",

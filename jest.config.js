@@ -1,7 +1,7 @@
 module.exports = {
   preset: 'ts-jest',
   collectCoverage: true,
-  collectCoverageFrom: ['**/*.{ts,tsx}', '!**/*.d.ts'],
+  collectCoverageFrom: ['**/*.{ts,tsx}', '!**/*.d.ts', '!**/*.testData.ts'],
   coveragePathIgnorePatterns: ['<rootDir>/node_modules/'],
   coverageDirectory: '<rootDir>/coverage',
   modulePathIgnorePatterns: ['<rootDir>/lib', '<rootDir>/docs', '<rootDir>/example'],
@@ -10,7 +10,7 @@ module.exports = {
       statements: 89,
       branches: 84,
       functions: 89,
-      lines: 89
-    }
-  }
-};
+      lines: 89,
+    },
+  },
+}
