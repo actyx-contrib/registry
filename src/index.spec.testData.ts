@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Actyx AG
+ * Copyright 2021 Actyx AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ export const TestPond = <E>(events: Record<string, E[]>): RxPond =>
             timestampMicros: 0,
             stream: '',
             offset: 0,
-            appId: ''
+            appId: '',
           })
         }, fish.initialState),
       )
