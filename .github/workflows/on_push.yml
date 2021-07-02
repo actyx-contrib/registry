@@ -22,7 +22,7 @@ jobs:
         run: npm run lint
       - name: run test
         run: npm run test
-  tests:
+  examples:
     name: Examples
     runs-on: ubuntu-latest
     steps:
