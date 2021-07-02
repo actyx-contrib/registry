@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { observeRegistry$ } from './index'
-import { Observable } from 'rxjs'
+import { observeRegistry, observeRegistry$ } from './index'
+import { firstValueFrom } from 'rxjs'
 import { Event, registryFish, testFish, TestPond } from './index.spec.testData'
-import { take } from 'rxjs/operators'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 describe('registry', () => {
   describe('observeRegistry$', () => {
     it('observe empty reg', async () => {
       const pond = TestPond({})
-      const out = observeRegistry$(pond, registryFish, Object.keys, testFish)
-      expect(await takeFirst(out)).toStrictEqual([])
+      const out = await firstValueFrom(observeRegistry$(pond, registryFish, Object.keys, testFish))
+      const outCbVersion = await new Promise(res =>
+        observeRegistry(pond.originalPond, registryFish, Object.keys, testFish, res),
+      )
+      expect(out).toStrictEqual([])
+      expect(out).toStrictEqual(outCbVersion)
     })
 
     it('observe multi entry reg', async () => {
@@ -45,8 +48,11 @@ describe('registry', () => {
       }
 
       const pond = TestPond(events)
-      const out = observeRegistry$(pond, registryFish, Object.keys, testFish)
-      expect(await takeFirst(out)).toStrictEqual([
+      const out = await firstValueFrom(observeRegistry$(pond, registryFish, Object.keys, testFish))
+      const outCbVersion = await new Promise(res =>
+        observeRegistry(pond.originalPond, registryFish, Object.keys, testFish, res),
+      )
+      expect(out).toStrictEqual([
         {
           id: 'a',
           add: 1,
@@ -58,6 +64,7 @@ describe('registry', () => {
           remove: 0,
         },
       ])
+      expect(out).toStrictEqual(outCbVersion)
     })
 
     it('observe multi entry and remove one entry again', async () => {
@@ -84,16 +91,18 @@ describe('registry', () => {
         ],
       }
       const pond = TestPond(events)
-      const out = observeRegistry$(pond, registryFish, Object.keys, testFish)
-      expect(await takeFirst(out)).toStrictEqual([
+      const out = await firstValueFrom(observeRegistry$(pond, registryFish, Object.keys, testFish))
+      const outCbVersion = await new Promise(res =>
+        observeRegistry(pond.originalPond, registryFish, Object.keys, testFish, res),
+      )
+      expect(out).toStrictEqual([
         {
           id: 'b',
           add: 2,
           remove: 0,
         },
       ])
+      expect(out).toStrictEqual(outCbVersion)
     })
   })
 })
-
-const takeFirst = <S>(from: Observable<S>): Promise<S> => from.pipe(take(1)).toPromise()

@@ -15,7 +15,7 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RxPond } from '@actyx-contrib/rx-pond'
-import { Fish, FishId, Tag } from '@actyx/pond'
+import { Fish, FishId, Tag, Pond } from '@actyx/pond'
 import { Observable, of } from 'rxjs'
 
 export type Event =
@@ -66,33 +66,41 @@ export const testFish = (id: string): Fish<TestState, Event> => ({
   },
 })
 
+const mkMockObserve = (events: Record<string, any[]>): RxPond['observe'] => <S, E>(
+  fish: Fish<S, E>,
+): Observable<S> => {
+  const tags = fish.where
+    .toString()
+    .split(' ')
+    .map(s => s.substr(1, s.length - 2))
+    .filter(s => s !== '&' && s !== '|' && s !== '')
+
+  const es = Object.entries(events)
+    .filter(([k]) => tags.every(t => k.split(' ').includes(t)))
+    .reduce<Array<E>>((acc, [_, e]) => [...acc, ...e], [])
+
+  return of(
+    es.reduce((s, e) => {
+      return fish.onEvent(s, e, {
+        eventId: '',
+        isLocalEvent: false,
+        lamport: 0,
+        tags: ['all'],
+        timestampAsDate: () => new Date(),
+        timestampMicros: 0,
+        stream: '',
+        offset: 0,
+        appId: '',
+      })
+    }, fish.initialState),
+  )
+}
+
 export const TestPond = <E>(events: Record<string, E[]>): RxPond =>
   (({
-    observe: <S>(fish: Fish<S, E>): Observable<S> => {
-      const tags = fish.where
-        .toString()
-        .split(' ')
-        .map(s => s.substr(1, s.length - 2))
-        .filter(s => s !== '&' && s !== '|' && s !== '')
-
-      const es = Object.entries(events)
-        .filter(([k]) => tags.every(t => k.split(' ').includes(t)))
-        .reduce<Array<E>>((acc, [_, e]) => [...acc, ...e], [])
-
-      return of(
-        es.reduce((s, e) => {
-          return fish.onEvent(s, e, {
-            eventId: '',
-            isLocalEvent: false,
-            lamport: 0,
-            tags: ['all'],
-            timestampAsDate: () => new Date(),
-            timestampMicros: 0,
-            stream: '',
-            offset: 0,
-            appId: '',
-          })
-        }, fish.initialState),
-      )
-    },
+    observe: mkMockObserve(events),
+    originalPond: ({
+      observe: ((fish, onStateChanged) =>
+        mkMockObserve(events)(fish).subscribe(onStateChanged).unsubscribe) as Pond['observe'],
+    } as any) as Pond,
   } as any) as RxPond)
