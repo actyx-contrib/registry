@@ -8,7 +8,9 @@
     "prepack": "npm run test:no-coverage && npm run build && npm run license:add && npm run lint",
     "clean": "rimraf ./lib ./coverage",
     "tsc": "tsc",
-    "example:observeRegistry": "ts-node ./example/observeRegistry.ts ",
+    "examples:build": "npm run example:observeRegistry:build",
+    "example:observeRegistry": "ts-node ./example/observeRegistry.ts",
+    "example:observeRegistry:build": "tsc ./example/observeRegistry.ts",
     "tsc:watch": "tsc --watch --pretty",
     "build": "tsc -p ./tsconfig.json",
     "build:watch": "npm run build -- --watch --pretty",
@@ -26,10 +28,10 @@
   "license": "Apache-2.0",
   "peerDependencies": {
     "@actyx/pond": "3",
-    "rxjs": ">5"
+    "rxjs": "^7.1.0"
   },
   "devDependencies": {
-    "@actyx/pond": "^3.0.1",
+    "@actyx/pond": "3",
     "@types/deep-equal": "^1.0.1",
     "@types/jest": "^26.0.0",
     "@types/node": "^14.0.13",
@@ -41,8 +43,9 @@
     "eslint-plugin-prettier": "^3.1.4",
     "jest": "^26.5.0",
     "license-check-and-add": "^3.0.4",
+    "license-checker": "^25.0.1",
     "prettier": "^1.19.1",
-    "rxjs": "^6.6",
+    "rxjs": "^7.1",
     "ts-jest": "^26.5.5",
     "ts-node": "^9.1.1",
     "typedoc": "^0.20.35",
