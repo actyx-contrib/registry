@@ -27,7 +27,7 @@
 
 import { observeRegistry } from '../src'
 import { ChatFish } from './fish/chatFish'
-import { Pond } from '@actyx/pond'
+import { Pond, AppManifest } from '@actyx/pond'
 
 console.log('\nMake sure Actyx is running\n\nEnter your name: ')
 process.stdin.once('data', data => {
@@ -36,7 +36,13 @@ process.stdin.once('data', data => {
 
   console.log(`Welcome ${username} to the random chatroom: ${chatRoomName}`)
 
-  Pond.default().then(pond => {
+  const manifest: AppManifest = {
+    appId: 'com.example.registry-example',
+    displayName: 'Registry Example',
+    version: '0.0.1',
+  }
+
+  Pond.default(manifest).then(pond => {
     ChatFish.emitJoinedEvent(pond, chatRoomName, username)
 
     // trace all massages from all chat rooms
