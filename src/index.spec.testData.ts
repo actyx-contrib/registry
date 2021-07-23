@@ -90,7 +90,7 @@ export const TestPond = <E>(events: Record<string, E[]>): RxPond =>
             timestampMicros: 0,
             stream: '',
             offset: 0,
-            appId: ''
+            appId: '',
           })
         }, fish.initialState),
       )
