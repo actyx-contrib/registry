@@ -1,3 +1,7 @@
+# IMPORTANT NOTICE
+
+**This repository has been archived and is no longer maintained. You are welcome to copy the code into your own projects and continue using it at your own discretion and risk.**
+
 <img width="130px" src="https://raw.githubusercontent.com/actyx-contrib/registry/master/registry-icon.png?token=AATHWQKVWIHXWZACE2TBV3264QIVK">
 
 # Registry toolkit
